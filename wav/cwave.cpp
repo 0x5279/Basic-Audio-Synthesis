@@ -57,7 +57,7 @@ cwave cwave::operator-(cwave &other) const {
 
 cwave cwave::operator-() const {
     cwave copy(*this);
-    copy *= -1;
+    copy.base_wave.data.phase += 0.5;
     return copy;
 }
 
