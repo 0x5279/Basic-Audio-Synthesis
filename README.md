@@ -1,9 +1,6 @@
 The code in main.cpp is only for testing purposes, and can be removed.
 Only the contents of the wav directory are needed for the lib to function.
 
-IMPORTANT: Currently, you will probably get unexpected behavior if you change 
-  the default waveformat.bit_depth of 16. I'm working on a fix to this.
-
 There are 4 different datatypes in wave.h:
 
 wave:
@@ -46,13 +43,15 @@ cwaves can be sampled in much the same way as normal waves, but have a few key d
 twave:
 a time-dependent wrapper for the cwave.
 
-on top of the cwave itself, it contains a start time and end time.
+on top of the cwave itself, it contains start time, end time, and information for amplitude modulation.
 
 but you can also just initialize it with only a start time and set a duration with the
 twave.setDuration(t) function.
 
-can also be sampled in the same way as cwave, but is dependent on t being between the start and end
-of the twave.
+can also be sampled in the same way as cwave, but is dependent on the modulation and the time inputs given to it.
+
+modulation is done with a struct called modNode, which creates a node with a temporal position, value, and a flag that determines what space the mod is relative to.
+a twave takes in a vector of these(in order based on time), and returns the sample with the appropriate volume. 
 
 waveformat:
 a collection of twaves that can then be compiled and written to a .wav file.
