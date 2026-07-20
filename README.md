@@ -1,9 +1,6 @@
 The code in main.cpp is only for testing purposes, and can be removed.
 Only the contents of the wav directory are needed for the lib to function.
 
-IMPORTANT: Currently, you will probably get unexpected behavior if you change 
-  the default waveformat.bit_depth of 16. I'm working on a fix to this.
-
 There are 4 different datatypes in wave.h:
 
 wave:
