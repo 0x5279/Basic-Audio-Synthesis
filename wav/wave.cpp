@@ -16,14 +16,14 @@ float wave::sample(float t) const {
 
     switch (data.type) { //return f(phase) * amplitude for the given waveform.
         case SAW:
-            return data.amplitude * phase;
+            return data.amplitude * (phase * 2 - 1);
         case TRIANGLE:
-            return data.amplitude * ((on_lhs * phase) + ((1.0f - on_lhs) * (1.0f - phase))) * 2.0f;
+            return data.amplitude * ((on_lhs * phase) + ((1.0f - on_lhs) * (1.0f - phase))) * 4.0f - 1;
         case SQUARE:
-            return data.amplitude * on_lhs;
+            return data.amplitude * (on_lhs * 2 - 1);
         case SINE:
-            return data.amplitude * static_cast<float>(std::sin(2*pi*phase)*0.5f + 0.5f);
-                //not as performant, use sparingly.
+            return data.amplitude * static_cast<float>(std::sin(2*pi*phase));
+            //not as performant, use sparingly.
     }
     return 0.0f;
 }

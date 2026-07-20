@@ -76,6 +76,16 @@ class cwave { // cwave here stands for compound wave, the result of combining si
 
 class twave { //cwave wrapper with defined temporal positions
 public:
+
+    struct modNode {
+        float value;
+        float time;
+        bool isAbsolute;
+
+        bool operator==(const modNode & mod) const = default;
+    };
+
+    std::vector<modNode> mods;
     cwave base_wave{};
     float start_time = 0;
     float end_time = 0;
@@ -89,7 +99,8 @@ public:
 
     void setDuration(float duration);
     [[nodiscard]] float getDuration() const;
-    [[nodiscard]] float sample(float t) const;
+    [[nodiscard]] static float getAbsoluteTime(modNode mod, float len);
+    [[nodiscard]] float sample(float t, float len) const;
 
     bool operator==(std::vector<twave>::const_reference wave) const = default;
 };
@@ -97,7 +108,7 @@ public:
 class waveformat { //the final 'compilation' step in creating a wave. This is where it gets turned into a .wav file.
 
     std::vector<twave> waves; //the waves to be compiled
-    std::vector<uint16_t> samples; //where the final samples will be kept until they are passed into the file.
+    std::vector<char> samples; //where the final samples will be kept until they are passed into the file.
     float len;
 
     int bit_depth = 16; //determines the # of bits allowed for
@@ -117,8 +128,8 @@ public:
     void removeWave(const twave& wave);
     void setBitDepth(int bit_depth);
     void setSampleRate(int sample_rate);
-    [[nodiscard]] float getLen();
-    void compile();
+    [[nodiscard]] float getLen() const;
+    void compile(float length, float volume = 0.2);
     void writeWav(std::string path);
 
 };
