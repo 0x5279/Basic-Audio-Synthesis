@@ -135,4 +135,27 @@ public:
 };
 
 
+class rt_waveformat {
+    std::vector<twave> waves;
+    double sample_rate;
+    double current_time;    //time currently being read out
+    double duration;
+
+    void updateDuration();
+
+public:
+
+    rt_waveformat() = default;
+    rt_waveformat(std::vector<twave> waves, double sample_rate, float duration);
+
+
+    void addWave(const twave& wave);
+    void removeWave(const twave& wave);
+    void setSampleRate(double sample_rate);
+    [[nodiscard]] uint32_t getSampleRate() const;
+
+    float nextSample(float volume = 0.2);
+    bool fillBuffer(float* buf, size_t size); //returns current_time >= duration
+};
+
 #endif //VOCALOIDFROMSCRATCH_WAV_H
