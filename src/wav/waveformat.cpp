@@ -46,7 +46,7 @@ void waveformat::setSampleRate(int sample_rate) {
     this->sample_rate = sample_rate;
 }
 
-void waveformat::compile(float length, float volume) {
+void waveformat::compile(float volume, float length) {
 
     this->len = length;
     uint32_t true_sample_size = std::ceil(static_cast<float>(bit_depth)/8);

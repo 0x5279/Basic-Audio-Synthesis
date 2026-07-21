@@ -2,6 +2,8 @@
 
 #include <utility>
 
+
+
 audioPlayer::audioPlayer(rt_waveformat track) {
     this->current_track = std::move(track);
 }
@@ -117,7 +119,6 @@ void audioPlayer::Stop() {
 }
 
 bool audioPlayer::selectCurrentOutputDevice() {
-
 #ifdef _WIN32
     std::system("cls");
 #else
@@ -126,10 +127,10 @@ bool audioPlayer::selectCurrentOutputDevice() {
 
     std::cout << "Type the number next to the output device you would like to use:\n";
 
-    std::vector<std::string> devices = getOutputDevices();
+    std::vector<Device> devices = getOutputDevices();
     for (size_t i = 0; i < devices.size(); i++) {
 
-        std::cout << "#" << i << ": " << devices[i] << "\n";
+        std::cout << "#" << i << ": " << devices[i].name << "\n";
 
     }
     int num = -1;
@@ -149,15 +150,41 @@ bool audioPlayer::selectCurrentOutputDevice() {
         }
     }
 
-    std::cout << "Output device selected: " << devices[num] << "\n";
-    this->output.device = num;
+    std::cout << "Output device selected: " << devices[num].name << "\n";
+    this->output.device = devices[num].index;
+
+    auto info = Pa_GetDeviceInfo(output.device);
+
+    if (is_playing) {
+        Pa_StopStream(stream);
+    }
+    Pa_CloseStream(stream);
+
+    PaError err = Pa_OpenStream(
+    &stream,
+    nullptr,
+    &output,
+    info->defaultSampleRate,
+    256,
+    paNoFlag,
+    callback,
+    this
+    );
+
+    if (err != paNoError)
+    {
+        std::cout << Pa_GetErrorText(err) << "\n";
+        return false;
+    }
+
+    this->current_track.setSampleRate(info->defaultSampleRate);
 
     return true;
 }
 
-std::vector<std::string> audioPlayer::getOutputDevices() const {
+std::vector<audioPlayer::Device> audioPlayer::getOutputDevices() const {
     const int count = Pa_GetDeviceCount();
-    std::vector<std::string> devices;
+    std::vector<Device> devices;
 
     if (!init) {
         std::cout << "audioPlayer hasn't been Initialized yet!\n";
@@ -175,7 +202,7 @@ std::vector<std::string> audioPlayer::getOutputDevices() const {
     for (int i = 0; i < count; i++) {
         const PaDeviceInfo* info = Pa_GetDeviceInfo(i);
         if (info->maxOutputChannels > 0) {
-            devices.emplace_back(info->name);
+            devices.emplace_back(Device(info->name,i));
         }
     }
 

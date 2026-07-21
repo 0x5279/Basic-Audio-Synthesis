@@ -9,6 +9,7 @@
 
 class audioPlayer {
 
+
     static int callback(
     const void* input,
     void* output,
@@ -26,6 +27,11 @@ class audioPlayer {
 
     public:
 
+    struct Device {
+        std::string name;
+        int index;
+    };
+
     audioPlayer() = default;
     audioPlayer(rt_waveformat track);
 
@@ -38,7 +44,7 @@ class audioPlayer {
     void setTrack(rt_waveformat track);
     void setTrackSampleRate(double sample_rate);
     bool selectCurrentOutputDevice();
-    [[nodiscard]] std::vector<std::string> getOutputDevices() const;
+    [[nodiscard]] std::vector<Device> getOutputDevices() const;
     int getCurrentOutputDevice();
 
 };

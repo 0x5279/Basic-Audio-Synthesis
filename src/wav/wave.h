@@ -129,7 +129,7 @@ public:
     void setBitDepth(int bit_depth);
     void setSampleRate(int sample_rate);
     [[nodiscard]] float getLen() const;
-    void compile(float length, float volume = 0.2);
+    void compile(float volume = 0.2, float length = 0);
     void writeWav(std::string path);
 
 };
